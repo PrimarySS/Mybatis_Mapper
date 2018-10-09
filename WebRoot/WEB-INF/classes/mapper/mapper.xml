@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.mybatis.xhchen.mapper.UserMapper">
+
+	<!-- 声明 sql片段 -->
+	<sql id="query_where_sql">
+		<if test="encapsulationUser != null">
+			<if
+				test="encapsulationUser.username != null and encapsulationUser.username!=''">
+				and user.username like '%${encapsulationUser.username}%'
+			</if>
+			<if
+				test="encapsulationUser.password != null and encapsulationUser.password != ''">
+				and user.password like '%${encapsulationUser.password}%'
+			</if>
+		</if>
+	</sql>
+
+	<!-- 添加数据 -->
+	<insert id="insertUser" parameterType="cn.mybatis.xhchen.entity.User">
+		<!-- id自动增长 -->
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+
+		<!-- 插入sql语句 -->
+		insert into user(username,password) values(#{username},#{password})
+	</insert>
+
+	<!-- 修改数据 -->
+	<update id="updateUser" parameterType="cn.mybatis.xhchen.entity.User">
+		<!-- 插入修改sql语句 -->
+		update user set username=#{username}, password=#{password} where
+		id=#{id}
+	</update>
+
+	<!-- 删除数据 -->
+	<delete id="deleteUser" parameterType="cn.mybatis.xhchen.entity.User">
+		<!-- 插入删除语句 -->
+		delete from user where id=#{id}
+	</delete>
+
+	<!-- 通过id查询 -->
+	<select id="findUserById" parameterType="java.lang.Integer"
+		resultType="cn.mybatis.xhchen.entity.User">
+		<!-- 插入查询语句 -->
+		select * from user where id=#{id}
+	</select>
+
+	<!-- 用户名模糊查询 -->
+	<select id="findUserByLike" parameterType="java.lang.String"
+		resultType="cn.mybatis.xhchen.entity.User">
+		<!-- 插入查询语句 -->
+		select * from user where username like '%${value}%'
+	</select>
+
+	<!-- pojo用户条件查询 -->
+	<select id="findUserByList" parameterType="cn.mybatis.xhchen.entity.UserQueryVo"
+		resultType="cn.mybatis.xhchen.entity.EncapsulationUser">
+		<!-- 插入查询语句 -->
+		select * from user
+		<where>
+			<!-- <if test="encapsulationUser != null">
+				<if
+					test="encapsulationUser.username != null and encapsulationUser.username!=''">
+					and user.username like '%${encapsulationUser.username}%'
+				</if>
+				<if
+					test="encapsulationUser.password != null and encapsulationUser.password != ''">
+					and user.password like '%${encapsulationUser.password}%'
+				</if>
+			</if> -->
+			<!-- 通过引用sql片段 -->
+			<include refid="query_where_sql"></include>
+		</where>
+	</select>
+
+	<!-- pojo用户条件查询总数 -->
+	<select id="findUserByCount" parameterType="cn.mybatis.xhchen.entity.UserQueryVo"
+		resultType="java.lang.Integer">
+		<!-- 插入查询语句 -->
+		select count(*) from user
+		<where>
+			<!-- <if test="encapsulationUser != null">
+				<if
+					test="encapsulationUser.username != null and encapsulationUser.username!=''">
+					and user.username like '%${encapsulationUser.username}%'
+				</if>
+				<if
+					test="encapsulationUser.password != null and encapsulationUser.password != ''">
+					and user.password like '%${encapsulationUser.password}%'
+				</if>
+			</if> -->
+			<!-- 引用sql片段 -->
+			<include refid="query_where_sql"></include>
+		</where>
+	</select>
+
+</mapper>
