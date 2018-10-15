@@ -19,4 +19,7 @@ mybatis动态代理实现数据库的增改删查功能和pojo包装类映射
 在mapper.java指定的方法返回值不一样：
 1、输入单个pojo对象，方法返回是单个对象
 2输入pojo对象是list，方法返回是List<Pojo>
+  
+详细解释过程请参考本博主的csdn博客有关mybatise动态代理的文章
+https://blog.csdn.net/qq_38931949/article/details/83064979
 
